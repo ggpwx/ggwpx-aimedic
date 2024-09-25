@@ -7,10 +7,16 @@ Config = {}
 Config.MinEMSOnline = 0
 
 -- Cost of medical services
-Config.ServiceFee = 150
+Config.ServiceFee = 500
 
 -- Time required for revive (in milliseconds)
 Config.ReviveDuration = 15000  -- 15 seconds
+
+-- Distance settings
+Config.MinDistance = 20.0  -- Minimum distance between player and ambulance
+
+-- Command settings
+Config.MedicCommand = "medic"  -- Command name for calling the ambulance
 
 -- Notification messages
 Config.Notifications = {
