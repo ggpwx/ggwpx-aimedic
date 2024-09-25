@@ -1,11 +1,12 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 
-local MIN_DISTANCE = 20.0
 local isActive = false
 local vehicle, medicPed = nil, nil
 local currentPlayerPed = PlayerPedId()
 
-RegisterCommand("medic", function(source, args, raw)
+local MIN_DISTANCE = Config.MinDistance
+
+RegisterCommand(Config.MedicCommand, function(source, args, raw)
     if (QBCore.Functions.GetPlayerData().metadata["isdead"] or QBCore.Functions.GetPlayerData().metadata["inlaststand"]) and not isActive then
         QBCore.Functions.TriggerCallback('ggwpx-aimedic:checkDoctorAvailability', function(medicsAvailable, canPay)
             if medicsAvailable >= Config.MinEMSOnline and canPay then
@@ -82,6 +83,7 @@ Citizen.CreateThread(function()
         end
     end
 end)
+
 function PerformMedicalTreatment()
     RequestAnimDict("mini@cpr@char_a@cpr_str")
     while not HasAnimDictLoaded("mini@cpr@char_a@cpr_str") do
@@ -103,6 +105,7 @@ function PerformMedicalTreatment()
         DeleteEntity(vehicle)
     end)
 end
+
 function Notify(msg, state)
     QBCore.Functions.Notify(msg, state)
 end
