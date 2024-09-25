@@ -1,4 +1,6 @@
 local QBCore = exports['qb-core']:GetCoreObject()
+
+local MIN_DISTANCE = 20.0
 local isActive = false
 local vehicle, medicPed = nil, nil
 local currentPlayerPed = PlayerPedId()
@@ -56,7 +58,8 @@ end
 
 Citizen.CreateThread(function()
     while true do
-        Citizen.Wait(200)
+        Citizen.Wait(5000)
+
         if isActive then
             local playerCoords = GetEntityCoords(currentPlayerPed)
             local vehicleCoords = GetEntityCoords(vehicle)
@@ -64,7 +67,11 @@ Citizen.CreateThread(function()
             local distToVehicle = Vdist(playerCoords, vehicleCoords)
             local distToPed = Vdist(playerCoords, pedCoords)
 
-            if distToVehicle <= 10 then
+            if distToVehicle > MIN_DISTANCE then
+                Notify(Config.Notifications["onTheWay"])
+            elseif distToPed > 10 then
+                Notify(Config.Notifications["waitingForMedics"])
+            elseif distToPed <= 10 then
                 TaskGoToCoordAnyMeans(medicPed, playerCoords.x, playerCoords.y, playerCoords.z, 1.0, 0, 0, 786603, 0xbf800000)
                 if distToPed <= 1 then
                     isActive = false
@@ -75,7 +82,6 @@ Citizen.CreateThread(function()
         end
     end
 end)
-
 function PerformMedicalTreatment()
     RequestAnimDict("mini@cpr@char_a@cpr_str")
     while not HasAnimDictLoaded("mini@cpr@char_a@cpr_str") do
@@ -97,7 +103,6 @@ function PerformMedicalTreatment()
         DeleteEntity(vehicle)
     end)
 end
-
 function Notify(msg, state)
     QBCore.Functions.Notify(msg, state)
 end
