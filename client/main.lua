@@ -4,14 +4,11 @@ local isActive = false
 local vehicle, medicPed = nil, nil
 local currentPlayerPed = PlayerPedId()
 
-local MIN_DISTANCE = Config.MinDistance
-
 RegisterCommand(Config.MedicCommand, function(source, args, raw)
     if (QBCore.Functions.GetPlayerData().metadata["isdead"] or QBCore.Functions.GetPlayerData().metadata["inlaststand"]) and not isActive then
         QBCore.Functions.TriggerCallback('ggwpx-aimedic:checkDoctorAvailability', function(medicsAvailable, canPay)
             if medicsAvailable >= Config.MinEMSOnline and canPay then
                 SpawnAmbulance(GetEntityCoords(currentPlayerPed))
-                TriggerServerEvent('ggwpx-aimedic:chargeFee')
                 Notify(Config.Notifications["onTheWay"])
             elseif medicsAvailable < Config.MinEMSOnline then
                 Notify(Config.Notifications["tooManyEMTs"], "error")
@@ -49,18 +46,20 @@ function SpawnAmbulance(position)
     medicPed = CreatePedInsideVehicle(vehicle, 26, pedModel, -1, true, false)
     AddBlipForEntity(vehicle)
 
-    TaskVehicleDriveToCoord(medicPed, vehicle, position.x, position.y, position.z, 20.0, 0, vehicleModel, 524863, 2.0)
+    TaskVehicleDriveToCoord(medicPed, vehicle, position.x, position.y, position.z, 40.0, 0, vehicleModel, 524863, 2.0)
 end
 
 function GetRandomVehicleNode(position)
-    local spawnRadius = 40
-    return GetClosestVehicleNodeWithHeading(position.x + math.random(-spawnRadius, spawnRadius), position.y + math.random(-spawnRadius, spawnRadius), position.z, 0, 3, 0)
+    local spawnRadius = Config.SpawnDistance
+    local spawnX = position.x + math.random(-spawnRadius, spawnRadius)
+    local spawnY = position.y + math.random(-spawnRadius, spawnRadius)
+    local spawnZ = position.z
+    return GetClosestVehicleNodeWithHeading(spawnX, spawnY, spawnZ, 0, 3, 0)
 end
 
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(5000)
-
         if isActive then
             local playerCoords = GetEntityCoords(currentPlayerPed)
             local vehicleCoords = GetEntityCoords(vehicle)
@@ -68,11 +67,11 @@ Citizen.CreateThread(function()
             local distToVehicle = Vdist(playerCoords, vehicleCoords)
             local distToPed = Vdist(playerCoords, pedCoords)
 
-            if distToVehicle > MIN_DISTANCE then
+            if distToVehicle > Config.SpawnDistance then
                 Notify(Config.Notifications["onTheWay"])
-            elseif distToPed > 10 then
+            elseif distToPed > Config.SpawnDistance then
                 Notify(Config.Notifications["waitingForMedics"])
-            elseif distToPed <= 10 then
+            elseif distToPed <= Config.SpawnDistance then
                 TaskGoToCoordAnyMeans(medicPed, playerCoords.x, playerCoords.y, playerCoords.z, 1.0, 0, 0, 786603, 0xbf800000)
                 if distToPed <= 1 then
                     isActive = false
@@ -101,6 +100,7 @@ function PerformMedicalTreatment()
         Citizen.Wait(500)
         TriggerEvent("hospital:client:Revive")
         Notify(Config.Notifications["reviveComplete"] .. Config.ServiceFee, "success")
+        TriggerServerEvent('ggwpx-aimedic:chargeFee')  
         DeleteEntity(medicPed)
         DeleteEntity(vehicle)
     end)
