@@ -30,7 +30,7 @@ AddEventHandler('ggwpx-aimedic:chargeFee', function()
     end
 
     TriggerEvent("qb-bossmenu:server:addAccountMoney", 'ambulance', chargeAmount)
-    TriggerEvent("ggwpx-aimedic:logPayment", src, chargeAmount) -- Kirim log pembayaran setelah pembayaran dilakukan
+    TriggerEvent("ggwpx-aimedic:logPayment", src, chargeAmount)
 end)
 
 RegisterServerEvent('ggwpx-aimedic:logPayment')
