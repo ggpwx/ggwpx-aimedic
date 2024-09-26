@@ -13,7 +13,6 @@ Config.ServiceFee = 500
 Config.ReviveDuration = 15000 
 
 -- Distance settings
-Config.MinDistance = 10.0 
 Config.SpawnDistance = 30.0 
 
 
