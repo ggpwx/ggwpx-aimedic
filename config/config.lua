@@ -10,13 +10,15 @@ Config.MinEMSOnline = 0
 Config.ServiceFee = 500
 
 -- Time required for revive (in milliseconds)
-Config.ReviveDuration = 15000  -- 15 seconds
+Config.ReviveDuration = 15000 
 
 -- Distance settings
-Config.MinDistance = 20.0  -- Minimum distance between player and ambulance
+Config.MinDistance = 10.0 
+Config.SpawnDistance = 30.0 
+
 
 -- Command settings
-Config.MedicCommand = "medic"  -- Command name for calling the ambulance
+Config.MedicCommand = "callmedic"
 
 -- Notification messages
 Config.Notifications = {
