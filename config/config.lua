@@ -25,9 +25,11 @@ Config.ReviveDuration = 15000
 -- Distance settings
 Config.SpawnDistance = 30.0 
 
-
 -- Command settings
 Config.MedicCommand = "callmedic"
+
+-- Use vehicle or not
+Config.UseVehicle = false  -- Set to false if you want to spawn ped directly
 
 -- Notification messages
 Config.Notifications = {
@@ -38,3 +40,5 @@ Config.Notifications = {
     ["reviveComplete"] = "✅ Your treatment is complete. You have been charged: $",
     ["canOnlyUse"] = "❗ This command can only be used when you're down or in last stand.",
 }
+
+
