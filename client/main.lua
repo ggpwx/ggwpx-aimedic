@@ -37,8 +37,8 @@ function SpawnAmbulance(position)
         Wait(500)
     end
 
-    local spawnPos = GetRandomVehicleNode(position)
-    vehicle = CreateVehicle(vehicleModel, spawnPos, GetEntityHeading(currentPlayerPed), true, false)
+    local heading = GetEntityHeading(currentPlayerPed)
+    vehicle = CreateVehicle(vehicleModel, spawnPos, heading, true, false)
     SetVehicleOnGroundProperly(vehicle)
     SetVehicleNumberPlateText(vehicle, "AIMEDIC")
     SetVehicleEngineOn(vehicle, true, true, false)
